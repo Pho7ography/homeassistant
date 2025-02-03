@@ -2,9 +2,9 @@ blueprint:
   name: OpenEPaperLink 2.6-inch Sensor Data Display
   description: 'Display sensor data and graphs on 2.6" ePaper display tags.
     
-    This blueprint is meant for use with the
+    This blueprint is meant for use with the 
     [OpenEPaperLink integration](https://github.com/jonasniesner/open_epaper_link_homeassistant)
-    by Jonas Niesner. With this, you can set up automations to use the common
+    by Jonas Niesner. With this, you can set up automations to use the common 
     2.6" ePaper tags (296x152 pixels) to display various sensor data.
     
     The display can show up to six values at the same time, in the following
@@ -13,8 +13,8 @@ blueprint:
     * Two numerical sensor values at the top. By default these are shown in black.
       Each of them can be displayed in red if it is above and/or below a certain threshold.
     
-    * Two line graphs in the middle and bottom. Each graph shows a black line
-      with the values of a sensor over a past time period (by default 24h).
+    * Two line graphs in the middle and bottom. Each graph shows a black line 
+      with the values of a sensor over a past time period (by default 24h). 
       In addition, the graph can display a thin red line with the values from a
       second sensor over the same time period.
     '
@@ -23,12 +23,22 @@ blueprint:
   input:
     tag_entity:
       name: Target display
-      description: 'Data will be displayed on this ePaper tag (2.6" with 296x152 pixels).'
+      description: >
+        Data will be displayed on this ePaper tag. The blueprint assumes a
+        2.6" tag with 296x152 pixels.
       selector:
         entity:
           multiple: false
     
-    # Top left numerical value
+    triggers:
+      name: When to initiate update
+      description: >
+        This will send new data to the access point. Keep in mind that the tags 
+        are refreshed only when they check in with the access point, so it may
+        take some time until the display itself is updated. 
+      selector:
+        trigger:
+    
     sensor1:
       name: Top left - Sensor
       description: Values from this sensor will be displayed at the top left.
@@ -39,7 +49,6 @@ blueprint:
       selector:
         icon:
     
-    # Top right numerical value
     sensor2:
       name: Top right - Sensor
       description: Values from this sensor will be displayed at the top right.
@@ -50,7 +59,6 @@ blueprint:
       selector:
         icon:
     
-    # Middle graph
     sensor3:
       name: Middle graph - Sensor
       description: Values from this sensor will be displayed as a black line in the middle graph.
@@ -61,7 +69,6 @@ blueprint:
       selector:
         icon:
     
-    # Bottom graph
     sensor5:
       name: Bottom graph - Sensor
       description: Values from this sensor will be displayed as a black line in the bottom graph.
@@ -83,7 +90,6 @@ blueprint:
     field3_icon: !input field3_icon
     field4_icon: !input field4_icon
     
-    # Adjusted layout for 296x152 resolution
     layout:
       - &frame
         type: rectangle
@@ -92,11 +98,11 @@ blueprint:
         width: 1
       - &icon
         type: icon
-        size: 40  # Increased size for larger display
+        size: 40
         color: black
       - &value
         type: text
-        size: 30  # Increased font size for readability
+        size: 30
         color: black
         anchor: mm
       - &unit
@@ -105,7 +111,6 @@ blueprint:
         color: black
         anchor: mm
       
-      # Top left value (expanded position for larger screen)
       - &frame1
         <<: *frame
         x_start: 0
@@ -123,7 +128,6 @@ blueprint:
         y: 14
         value: "{{ states(sensor1) }}"
       
-      # Top right value
       - &frame2
         <<: *frame
         x_start: 150
@@ -141,7 +145,6 @@ blueprint:
         y: 14
         value: "{{ states(sensor2) }}"
       
-      # Middle graph (Wider for 296px width)
       - &frame3
         <<: *frame
         x_start: 0
@@ -160,7 +163,6 @@ blueprint:
             width: 3
             joint: curve
       
-      # Bottom graph
       - &frame4
         <<: *frame
         x_start: 0
